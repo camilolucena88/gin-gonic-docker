@@ -6,11 +6,10 @@ COPY . .
 
 RUN go get -d -v ./...
 RUN go install -v ./...
-RUN curl https://raw.githubusercontent.com/gin-gonic/examples/master/basic/main.go > main.go
 # Compile the app WITHOUT optimization flags, allows Delve to
 # provide a better debug experience. This creates an executable `server`
 # and looks under `go-remote-debug-tutorial/example-app` for the Go files.
-RUN go build -gcflags="all=-N -l" -o github.com/camilolucena88/gin-gonic-docker #gosetup
+RUN go build -gcflags="all=-N -l" -o /server
 # Install Delve
 RUN go install github.com/go-delve/delve/cmd/dlv@latest
 
@@ -30,6 +29,6 @@ WORKDIR /
 COPY --from=builder /server /
 # Copy the delve executable to root
 COPY --from=builder /go/bin/dlv /
-RUN ls -l /server
+
 # Run Delve on port 40000 on
-CMD /dlv --listen=:40000 --headless=true --log --api-version=2 --accept-multiclient exec ./server
+CMD ["/dlv", "--listen=:40000", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "/server"]
