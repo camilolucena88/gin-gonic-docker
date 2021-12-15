@@ -31,4 +31,4 @@ COPY --from=builder /server /
 COPY --from=builder /go/bin/dlv /
 
 # Run Delve on port 40000 on
-CMD ["/dlv", "--listen=:40000", "--headless=true", "--api-version=2", "--accept-multiclient", "exec", "/server"]
+CMD ["/dlv", "--listen=:40000", "--headless=true", "--api-version=2", "--accept-multiclient", "--log", "--log-output=debugger,rpc", "exec", "/server"]
