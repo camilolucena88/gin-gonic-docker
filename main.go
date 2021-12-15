@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/camilolucena88/docker-go-gin/controllers"
-	"github.com/camilolucena88/docker-go-gin/services"
+	"github.com/camilolucena88/gin-gonic-docker/controllers"
+	"github.com/camilolucena88/gin-gonic-docker/services"
 	"github.com/gin-gonic/gin"
 )
 

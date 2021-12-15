@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/camilolucena88/docker-go-gin/entities"
-	"github.com/camilolucena88/docker-go-gin/services"
+	"github.com/camilolucena88/gin-gonic-docker/entities"
+	"github.com/camilolucena88/gin-gonic-docker/services"
 	"github.com/gin-gonic/gin"
 )
 

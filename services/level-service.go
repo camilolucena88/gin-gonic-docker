@@ -1,6 +1,6 @@
 package services
 
-import "github.com/camilolucena88/docker-go-gin/entities"
+import "github.com/camilolucena88/gin-gonic-docker/entities"
 
 type LevelService interface {
 	Save(level entities.Level) entities.Level

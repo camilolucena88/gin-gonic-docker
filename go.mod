@@ -1,4 +1,4 @@
-module github.com/camilolucena88/docker-go-gin
+module github.com/camilolucena88/gin-gonic-docker
 
 go 1.17
 
