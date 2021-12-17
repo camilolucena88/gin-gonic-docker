@@ -8,22 +8,29 @@ import (
 
 var (
 	levelService    services.LevelService       = services.New()
-	videoController controllers.LevelController = controllers.New(levelService)
+	levelController controllers.LevelController = controllers.New(levelService)
 )
 
 func main() {
 	router := gin.Default()
-	router.GET("/levels", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.FindOne(ctx))
-	})
-	router.POST("/levels", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.Save(ctx))
-	})
-	router.PUT("/levels", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.Update(ctx))
-	})
-	router.DELETE("/levels", func(ctx *gin.Context) {
-		ctx.JSON(200, videoController.Delete(ctx))
-	})
+
+	levels := router.Group("/levels")
+	{
+		levels.GET("", func(ctx *gin.Context) {
+			levelController.FindAll(ctx)
+		})
+		levels.GET("/:id", func(ctx *gin.Context) {
+			levelController.FindOne(ctx)
+		})
+		levels.POST("", func(ctx *gin.Context) {
+			levelController.Save(ctx)
+		})
+		levels.PUT("/:id", func(ctx *gin.Context) {
+			levelController.Update(ctx)
+		})
+		levels.DELETE("/:id", func(ctx *gin.Context) {
+			levelController.Delete(ctx)
+		})
+	}
 	router.Run()
 }
