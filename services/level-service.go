@@ -1,64 +1,49 @@
 package services
 
 import (
-	"errors"
 	"github.com/camilolucena88/gin-gonic-docker/entities"
+	"github.com/camilolucena88/gin-gonic-docker/repositories"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type LevelService interface {
-	Save(level entities.Level) entities.Level
-	FindOne(id uint64) (entities.Level, error)
-	FindAll() []entities.Level
-	Update(id uint64, level entities.Level) (entities.Level, error)
-	Delete(id uint64) ([]entities.Level, error)
+	Create(level entities.Level) (primitive.ObjectID, error)
+	FindOne(id primitive.ObjectID) (entities.Level, error)
+	FindAll() ([]entities.Level, error)
+	Update(id primitive.ObjectID, level entities.Level) (entities.Level, error)
+	Delete(id primitive.ObjectID) error
 }
-
 type levelService struct {
-	levels []entities.Level
+	levelRepository repositories.LevelRepository
 }
 
-func New() LevelService {
-	return &levelService{}
-}
-
-func (services *levelService) Save(level entities.Level) entities.Level {
-	services.levels = append(services.levels, level)
-	return level
-}
-
-func (services *levelService) FindAll() []entities.Level {
-	return services.levels
-}
-
-func (services *levelService) FindOne(id uint64) (entities.Level, error) {
-	for i, value := range services.levels {
-		if id == value.Id {
-			return services.levels[i], nil
-		}
+func New(repo repositories.LevelRepository) LevelService {
+	return &levelService{
+		levelRepository: repo,
 	}
-	var level entities.Level
-	return level, errors.New("not found")
 }
 
-func (services *levelService) Update(id uint64, level entities.Level) (entities.Level, error) {
-	for i, value := range services.levels {
-		if id == value.Id {
-			services.levels[i].Level = level.Level
-			return services.levels[i], nil
-		}
+func (services *levelService) Create(level entities.Level) (primitive.ObjectID, error) {
+	var levelId primitive.ObjectID
+	levelId, err := services.levelRepository.Create(level)
+	if err != nil {
+		return levelId, err
 	}
-	return level, errors.New("not found")
+	return levelId, err
 }
 
-func remove(levels []entities.Level, index uint64) []entities.Level {
-	return append(levels[:index], levels[index+1:]...)
+func (services *levelService) FindAll() ([]entities.Level, error) {
+	return services.levelRepository.FindAll()
 }
 
-func (services *levelService) Delete(id uint64) ([]entities.Level, error) {
-	for _, value := range services.levels {
-		if id == value.Id {
-			return remove(services.levels, id), nil
-		}
-	}
-	return remove(services.levels, id), nil
+func (services *levelService) FindOne(id primitive.ObjectID) (entities.Level, error) {
+	return services.levelRepository.FindOne(id)
+}
+
+func (services *levelService) Update(id primitive.ObjectID, level entities.Level) (entities.Level, error) {
+	return services.levelRepository.Update(id, level)
+}
+
+func (services *levelService) Delete(id primitive.ObjectID) error {
+	return services.levelRepository.Delete(id)
 }

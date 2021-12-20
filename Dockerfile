@@ -1,5 +1,5 @@
 FROM golang:1.17 as builder
-
+#Commented for GORMz to work
 ENV CGO_ENABLED 0
 WORKDIR /go/src/app
 COPY . .

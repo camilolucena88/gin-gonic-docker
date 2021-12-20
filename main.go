@@ -2,29 +2,31 @@ package main
 
 import (
 	"github.com/camilolucena88/gin-gonic-docker/controllers"
+	"github.com/camilolucena88/gin-gonic-docker/repositories"
 	"github.com/camilolucena88/gin-gonic-docker/services"
 	"github.com/gin-gonic/gin"
 )
 
 var (
-	levelService    services.LevelService       = services.New()
-	levelController controllers.LevelController = controllers.New(levelService)
+	levelRepository repositories.LevelRepository = repositories.New()
+	levelService    services.LevelService        = services.New(levelRepository)
+	levelController controllers.LevelController  = controllers.New(levelService)
 )
 
-func main() {
+func setupRouter() *gin.Engine {
 	router := gin.Default()
-
 	levels := router.Group("/levels")
 	{
+		levels.POST("", func(ctx *gin.Context) {
+			levelController.Create(ctx)
+		})
 		levels.GET("", func(ctx *gin.Context) {
 			levelController.FindAll(ctx)
 		})
 		levels.GET("/:id", func(ctx *gin.Context) {
 			levelController.FindOne(ctx)
 		})
-		levels.POST("", func(ctx *gin.Context) {
-			levelController.Save(ctx)
-		})
+
 		levels.PUT("/:id", func(ctx *gin.Context) {
 			levelController.Update(ctx)
 		})
@@ -32,5 +34,10 @@ func main() {
 			levelController.Delete(ctx)
 		})
 	}
+	return router
+}
+
+func main() {
+	router := setupRouter()
 	router.Run()
 }
